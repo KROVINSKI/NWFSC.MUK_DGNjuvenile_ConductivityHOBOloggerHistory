@@ -73,18 +73,18 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_DGNjuvenile_ConductivityHOBOlogger
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 ## 2.1 Create a list of files 
-files <- list.files(pattern = ".csv")
-print(files)
+filesCNDCT <- list.files(pattern = ".csv")
+print(filesCNDCT)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 ## 2.2 Create a temporary place for files 
-temp <- lapply(files, fread, sep= ",")
-print(temp)
+tempCNDCT <- lapply(files, fread, sep= ",")
+print(tempCNDCT)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 ## 2.3 Create a new vector for Moats data logs 
 # "M01thruM13Moatslog_data" via rbind
-dHOBOloggerCNDCT <- rbindlist(temp)
+dHOBOloggerCNDCT <- rbindlist(tempCNDCT, fill = TRUE)
 print(dHOBOloggerCNDCT )
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
