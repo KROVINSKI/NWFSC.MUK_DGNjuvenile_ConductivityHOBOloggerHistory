@@ -98,6 +98,12 @@ print(dHOBOloggerCNDCT)
 ```
 
 
+# 2.2) Export dataframe
+```{r}
+
+write.csv(dHOBOloggerCNDCT, file = "2021.02.17_dHOBOloggerCNDCT.csv", row.names = FALSE)
+
+```
 
 
 
