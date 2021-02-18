@@ -1,0 +1,229 @@
+
+---
+title: "Characterizing Salmon Shed Tank Conductivity from HOBOlogger"
+output:
+ html_document:
+    df_print: paged
+    code_folding: hide
+    toc: TRUE
+    toc_depth: 4
+    toc_float: true
+    theme: cerulean
+    highlight: haddock
+    smart: false
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+Hello World
+
+Author: OA Lab, NWFSC
+Title: Characterizing Salmon Shed Tank Conductivity from HOBOlogger
+Date: 2018-2019 (R document February 2021)
+
+
+
+# Version Check
+```{r 0.1 Version Check , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
+#*********************************
+## Version Check
+#********************************* 
+R.version
+
+```
+
+
+
+# Libraries
+```{r 0.0 Libraries , echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
+#*********************************
+##Libraries
+#********************************* 
+library(here)
+library(reshape)
+library(reshape2)
+library(data.table)
+library(stringr)
+library(tidyverse)
+library(plyr)
+library(nlme)
+library(tidyr)
+library(dbplyr)
+library(dplyr)
+library(purrr)
+library(wql)
+library(lubridate)
+library(tibbletime)
+library(arsenal)
+library(compareDF)
+#for graphing
+library(ggplot2)
+library(ggfortify)
+library(stringr)
+library(nlme)
+library(RColorBrewer)
+library(patchwork)
+#statistical analysis
+library(gdata)
+library(rsq)
+library(doBy)
+#Rnotebooks 
+library(gridExtra)
+library(kableExtra)
+
+```
+
+
+```{r 1.0 Setting Working Directory, ECHO= FALSE, message=FALSE, warning=FALSE}
+#*********************************
+## 1.) Set working directory
+#*********************************
+
+# Working Directory Style 1 --- Just this Chunk
+# knitr::opts_chunk$set(echo = TRUE)
+# knitr::opts_knit$set(root.dir =
+#                        "/Users/katherinerovinski/GIT/NWFSC.MUK_DGNjuvenile.tanks/HOBO Data")
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+# Working Directory Style 2 --- Relative Paths with the package here
+# read_csv(here::here("dHOBOlogger_CNDCT1", "19-26NOV18_20449374_ConductivityLogger_FactoryCAL.csv"))
+# 
+# read_csv(here::here("dHOBOloggerCNDCT", "2021.02.17_dHOBOloggerCNDCT.csv")
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+# # Working Directory Style 3 --- Everything one folder
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_DGNjuvenile.tanks")
+
+
+```
+
+
+
+# 2.) Creating the Dataframe
+```{r 2.) Creating the Dataframe, echo=FALSE, message=FALSE, warning=FALSE}
+
+#*********************************
+## 2.) Creating the initial Dataframe, dtank
+#*********************************
+
+
+#set working directory to the correct folder
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_DGNjuvenile.tanks")
+
+
+
+dHOBOlogCNDCT <- read.csv(file = "2021.02.17_dHOBOloggerCNDCT.csv", 
+                  stringsAsFactors = FALSE)
+
+# dtank <- read.csv(file = "SpecData_2021.02.11_masterfile_salmonshed_chumhouse.csv", 
+#                   stringsAsFactors = FALSE)
+# dim(dtank)
+# 
+# dfSalinity <- read.csv(file = "2021.02.02_FishCareLog_salinity.csv", 
+#                   stringsAsFactors = FALSE)
+
+
+```
+
+
+
+
+
+# 3.) dataframe Cleaning 
+```{r 3.) Creating dateTime objects, echo=FALSE, message=FALSE, warning=FALSE }
+#*********************************
+## 3.) dataframe Cleaning   
+#*********************************
+
+dHOBOlogCNDCT$probeSerialNum <- ""
+dHOBOlogCNDCT$probeSerialNum <- "20449374"
+
+# dataframe2 <- dataframe2 %>% rename(df.comments = comments)
+# the existing format 4/2/19 10:21
+# dHOBOlogCNDCT <- dHOBOlogCNDCT %>% rename(dHOBOlogCNDCT$Date.Time..GMT.07.00 = dateTime)
+names(dHOBOlogCNDCT)
+
+#  [2] "dateTime"  
+dHOBOlogCNDCT <- rename(dHOBOlogCNDCT, c(Date.Time..GMT.07.00= "dateTime"))
+
+#  [3] "Low.Range..μS.cm..LGR.S.N..20449374..SEN.S.N..20449374." 
+dHOBOlogCNDCT <- rename(dHOBOlogCNDCT, c(Low.Range..μS.cm..LGR.S.N..20449374..SEN.S.N..20449374.= "lowRangeμS.cm"))
+
+#  [4] "High.Range..μS.cm..LGR.S.N..20449374..SEN.S.N..20449374."       
+dHOBOlogCNDCT <- rename(dHOBOlogCNDCT, c(High.Range..μS.cm..LGR.S.N..20449374..SEN.S.N..20449374.= "highRangeμS.cm"))                      
+#  [5] "Temp...C..LGR.S.N..20449374..SEN.S.N..20449374."  
+dHOBOlogCNDCT <- rename(dHOBOlogCNDCT, c(Temp...C..LGR.S.N..20449374..SEN.S.N..20449374.= "temperature")) 
+
+#  [6] "Specific.Conductance..μS.cm..LGR.S.N..20449374."         
+dHOBOlogCNDCT <- rename(dHOBOlogCNDCT, c(Specific.Conductance..μS.cm..LGR.S.N..20449374.= "specificCNDCTμS.cm")) 
+
+#  [7] "Salinity..ppt..LGR.S.N..20449374."                       
+dHOBOlogCNDCT <- rename(dHOBOlogCNDCT, c(Salinity..ppt..LGR.S.N..20449374.= "salinityPPT")) 
+
+
+dHOBOlogCNDCT <- subset( dHOBOlogCNDCT, select = -c(Coupler.Detached..LGR.S.N..20449374.,
+                                         Coupler.Attached..LGR.S.N..20449374.,
+                                         Stopped..LGR.S.N..20449374.,         
+                                         End.Of.File..LGR.S.N..20449374.,
+                                         End.Of.File..LGR.S.N..20449374..1,
+                                         End.Of.File..LGR.S.N..20449374..2,
+                                         Temp...F..LGR.S.N..20449374..SEN.S.N..20449374.))
+
+
+dHOBOlogCNDCT$location <- ""
+dHOBOlogCNDCT$location <- "salmonShed"
+
+names(dHOBOlogCNDCT)
+
+```
+
+
+
+# 4.) Timeseries plots
+```{r Salinity Values (factory calibration) from HOBOlogger in Salmon Shed}
+
+dHOBOlogCNDCT.2 <- dHOBOlogCNDCT %>% arrange(dateTime) %>% filter(row_number() %% 17 == 0)
+
+ggplot(dHOBOlogCNDCT.2, aes(dateTime, salinityPPT)) + 
+  geom_point(aes(colour=location, point=)) + 
+  ggtitle("Salinity Values (factory calibration) from HOBOlogger in Salmon Shed") +
+  ylim(24,30)
+
+
+```
+
+
+```{r}
+
+ggplot(dHOBOlogCNDCT, aes(dateTime, temperature)) + 
+  geom_point(aes(colour=location, point=)) + 
+  ggtitle("Temperature Values from Conductivty HOBOlogger in Salmon Shed") 
+
+```
+
+
+
+```{r}
+write.csv(dHOBOlogCNDCT, "2021.02.18a_dHOBOlogCNDCT.csv")
+
+```
+
+
+
+
+
+
+
+
+
+```{r}
+#**************E*N*D*************# 
+#*********************************
+## END OF SCRIPT | END OF DOCUMENT 
+#*********************************
+```
+
+
+## END OF SCRIPT | END OF DOCUMENT
