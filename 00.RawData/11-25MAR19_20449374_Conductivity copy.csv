@@ -1,4 +1,5 @@
-﻿number,"Date Time, GMT-07:00","Low Range, μS/cm (LGR S/N: 20449374, SEN S/N: 20449374)","High Range, μS/cm (LGR S/N: 20449374, SEN S/N: 20449374)","Temp, °C (LGR S/N: 20449374, SEN S/N: 20449374)",Coupler Detached (LGR S/N: 20449374),Coupler Attached (LGR S/N: 20449374),Stopped (LGR S/N: 20449374),End Of File (LGR S/N: 20449374),End Of File (LGR S/N: 20449374),End Of File (LGR S/N: 20449374)
+﻿Plot Title: 20449374_Conductivity,,,,,,,,,,
+#,"Date Time, GMT-07:00","Low Range, μS/cm (LGR S/N: 20449374, SEN S/N: 20449374)","High Range, μS/cm (LGR S/N: 20449374, SEN S/N: 20449374)","Temp, °C (LGR S/N: 20449374, SEN S/N: 20449374)",Coupler Detached (LGR S/N: 20449374),Coupler Attached (LGR S/N: 20449374),Stopped (LGR S/N: 20449374),End Of File (LGR S/N: 20449374),End Of File (LGR S/N: 20449374),End Of File (LGR S/N: 20449374)
 1,3/11/19 7:21,33041.7,28087.4,8.37,Logged,,,,,
 2,3/11/19 7:31,33041.7,28068.1,8.36,,,,,,
 3,3/11/19 7:41,33041.7,28073.6,8.37,,,,,,

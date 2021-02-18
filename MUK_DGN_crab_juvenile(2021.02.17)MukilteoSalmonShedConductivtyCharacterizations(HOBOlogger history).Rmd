@@ -78,19 +78,24 @@ print(filesCNDCT)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 ## 2.2 Create a temporary place for files 
-tempCNDCT <- lapply(files, fread, sep= ",")
+tempCNDCT <- lapply(filesCNDCT, fread, sep= ",")
 print(tempCNDCT)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 ## 2.3 Create a new vector for Moats data logs 
 # "M01thruM13Moatslog_data" via rbind
 dHOBOloggerCNDCT <- rbindlist(tempCNDCT, fill = TRUE)
-print(dHOBOloggerCNDCT )
+print(dHOBOloggerCNDCT)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 ```
 
+# 2.1) Cleaning up the dataframe
+```{r}
 
+# dHOBOloggerCNDCT<- dHOBOloggerCNDCT[-1,]
+
+```
 
 
 
